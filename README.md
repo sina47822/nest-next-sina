@@ -1,3 +1,4 @@
+# install nest on computer and create new project
 first install nestjs globally in my computer. -g is globally
 ```bash
 $ npm install -g @nestjs/cli
