@@ -1,4 +1,4 @@
-# install nest on computer and create new project
+# install nest cli on computer and create new project
 first install nestjs globally in my computer. -g is globally
 ```bash
 $ npm install -g @nestjs/cli
@@ -71,6 +71,78 @@ we can give the module name when nest ask the name
 for add module on the existed app use this (for example blog)
 ```
 nest generate module blog
+```
+## run postgres
+for run postgres i use docker-compose file outside of project
+```
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:latest
+    container_name: my-postgres
+    environment:
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: mypassword
+      POSTGRES_DB: mydb
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:
+
+```
+add somethings in app.module.ts file in imports but befor that i need to install some packages below 
+```
+npm install @nestjs/typeorm typeorm pg
+```
+add in @module()
+
+```
+  imports: [
+    TypeOrmModule.forRoot({
+      type: 'postgres',
+      host: 'localhost',
+      port: 5432,
+      username: 'myuser',      // نام کاربری از docker-compose
+      password: 'mypassword',  // رمز عبور از docker-compose
+      database: 'mydb',        // نام دیتابیس از docker-compose
+      entities: [__dirname + '/**/*.entity{.ts,.js}'],
+      synchronize: true,       // فقط برای محیط توسعه
+    }),
+  ],
+```
+i can use this format below to build tables for database
+```
+import { Entity, Column, PrimaryGeneratedColumn } from 'typeORM';
+
+@Entity()
+export class User {
+  @PrimaryGeneratedColumn()
+  id: number;
+
+  @Column()
+  name: string;
+
+  @Column({ unique: true })
+  email: string;
+}
+```
+
+## install mongodb 
+after install mongo db from website with this link below for linux ubuntu
+### https://www.mongodb.com/docs/v7.0/tutorial/install-mongodb-on-ubuntu/#std-label-install-mdb-community-ubuntu
+
+install packages for nest
+```
+npm install mongoose @nestjs/mongoose @types/mongoose
+```
+
+### in app module add this in app.module.ts
+```
+imports: [MongooseModule.forRoot("")]
 ```
 <p align="center">
   <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
