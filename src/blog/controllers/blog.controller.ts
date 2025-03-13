@@ -1,7 +1,8 @@
 import { Body, Controller, Delete, Get, Param, Post, Put, Query } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { BlogDto } from './dtos/blog.dtos';
-import { BlogService } from './blog.service';
+import { BlogDto } from '../dtos/blog.dtos';
+import { BlogService } from '../services/blog.service';
+import { BlogQueryDto } from '../dtos/blog-query.dtos';
 
 @ApiTags('Blog')
 @Controller('blog')
@@ -12,18 +13,21 @@ export class BlogController {
     ) {}
 
     @Get()
-    findAll(@Query() queryParams) {
-        return this.blogservice.findAll()
+    findAll(@Query() queryparams: BlogQueryDto) {
+        console.log('Raw Query Params:', queryparams);
+        console.log('Page Type:', typeof queryparams.page);
+        console.log('Limit Type:', typeof queryparams.limit);
+        return this.blogservice.findAll(queryparams);
     }
 
     @Post()
     create(@Body() body: BlogDto) {
-        return this.blogservice.create(body)
+        return this.blogservice.create(body);
     }
 
     @Get(':id')
     findOne(@Param('id') id: string) {
-        return this.blogservice.fineOne(id)
+        return this.blogservice.fineOne(id);
     }
 
     // @Get('category')
@@ -37,7 +41,7 @@ export class BlogController {
     // }
 
     @Put(':id')
-    uodate(@Param('id') id : string, @Body() body: BlogDto) {
+    update(@Param('id') id : string, @Body() body: BlogDto) {
         return this.blogservice.update(id, body)
     }
 
